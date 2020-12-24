@@ -26,15 +26,18 @@ export default class DBSure {
             })
         })
     }
+
     public async add<T = any>(name: string, items: T | T[]) {
         const { store } = await this.commit(name, 'readwrite')
         Array.isArray(items) ? items.map(item => store.add(item)) : store.add(items)
         return items
     }
+
     public async query<T = any>(name: string, query?: (item: T) => boolean): Promise<T[]> {
         const { items } = await this.commit(name, 'readwrite')
         return typeof query === 'function' ? items.filter(query) : items
     }
+
     public async update<T = any>(name: string, key: any, modify: (data: T) => void): Promise<IDBRequest> {
         const { store } = await this.commit(name, 'readwrite')
         const request = store.get(key)
@@ -47,13 +50,12 @@ export default class DBSure {
         })
         return request
     }
-    public async put(name: string) {
-        const { store } = await this.commit(name, 'readwrite')
-    }
+
     public async remove(name: string, key: IDBValidKey | IDBKeyRange): Promise<IDBRequest> {
         const { store } = await this.commit(name, 'readwrite')
         return store.delete(key)
     }
+
     public commit(name: string, mode: IDBTransactionMode) {
         return new Promise((resolve: (object: CommitResolve) => void, reject) => {
             if (!this.db) throw new Error(`db not opened.`);
@@ -63,6 +65,7 @@ export default class DBSure {
             request.addEventListener('error', reject)
         })
     }
+
     public createStore(name: string) {
         return {
             add: async <T = any>(items: T | T[]): Promise<T | T[]> => await this.add(name, items),
@@ -77,7 +80,7 @@ function createSchema(db: IDBDatabase, schema: Schema) {
     if (!db.objectStoreNames.contains(schema.name)) {
         const store = db.createObjectStore(schema.name, schema.options)
         if (Array.isArray(schema.indexs)) {
-            schema.indexs.forEach(({key, options }) => store.createIndex(key, key, options))
+            schema.indexs.forEach(({ key, options }) => store.createIndex(key, key, options))
         }
     }
 }
