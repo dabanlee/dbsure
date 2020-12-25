@@ -1,7 +1,7 @@
 {
   "name": "dbsure",
   "moduleName": "DBSure",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "indexedDB wrapper.",
   "main": "dist/dbsure.js",
   "module": "dist/dbsure.es.js",

@@ -1,10 +1,10 @@
 export default class DBSure {
     public name: string
     public version: number
-    public schemas: Schema[]
+    public schemas: DBSURE.Schema[]
     public db: IDBDatabase
 
-    constructor(name: string, version = 1, schemas: Schema[]) {
+    constructor(name: string, version = 1, schemas: DBSURE.Schema[]) {
         this.name = name
         this.version = version
         this.schemas = schemas
@@ -57,7 +57,7 @@ export default class DBSure {
     }
 
     public commit(name: string, mode: IDBTransactionMode) {
-        return new Promise((resolve: (object: CommitResolve) => void, reject) => {
+        return new Promise((resolve: (object: DBSURE.CommitResolve) => void, reject) => {
             if (!this.db) throw new Error(`db not opened.`);
             const store = this.db.transaction(name, mode).objectStore(name)
             const request = store.getAll()
@@ -66,7 +66,7 @@ export default class DBSure {
         })
     }
 
-    public createStore(name: string) {
+    public createStore(name: string): DBSURE.IStore {
         return {
             add: async <T = any>(items: T | T[]): Promise<T | T[]> => await this.add(name, items),
             query: async <T = any>(query?: (item: T) => boolean): Promise<T[]> => await this.query(name, query),
@@ -76,7 +76,7 @@ export default class DBSure {
     }
 }
 
-function createSchema(db: IDBDatabase, schema: Schema) {
+function createSchema(db: IDBDatabase, schema: DBSURE.Schema) {
     if (!db.objectStoreNames.contains(schema.name)) {
         const store = db.createObjectStore(schema.name, schema.options)
         if (Array.isArray(schema.indexs)) {
