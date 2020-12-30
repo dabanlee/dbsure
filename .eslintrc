@@ -21,6 +21,7 @@
         // 无需分号结尾
         "semi": ["warn", "never"],
         // 未使用变量警告提示
+        "no-undef": ["off"],
         "no-unused-vars": ["off"],
         // 只允许单引号、模板字符串、avoid escape 情况下单双混用
         "quotes": ["warn", "single", {
