@@ -4,10 +4,19 @@ export default class DBSure {
     public schemas: DBSURE.Schema[]
     public db: IDBDatabase
 
-    constructor(name: string, version = 1, schemas: DBSURE.Schema[]) {
+    constructor(name: string, schemas: DBSURE.Schema[])
+    constructor(name: string, version: number, schemas: DBSURE.Schema[])
+    constructor(name: string, version: number | DBSURE.Schema[], schemas?: DBSURE.Schema[]) {
         this.name = name
-        this.version = version
-        this.schemas = schemas
+
+        if (typeof version === 'number') {
+            this.version = version
+            this.schemas = schemas
+        }
+        if (Array.isArray(version)) {
+            this.version = 1
+            this.schemas = version
+        }
     }
 
     public openDB(): Promise<IDBOpenDBRequest> {
@@ -46,7 +55,7 @@ export default class DBSure {
             modify(data)
             const update = store.put(data)
             // update.addEventListener('success', () => console.log(`updated`, data))
-            update.addEventListener('error', (event) => console.error(`updated fail`, event))
+            update.addEventListener('error', event => console.error(`updated fail`, event))
         })
         return request
     }
@@ -58,7 +67,7 @@ export default class DBSure {
 
     public commit(name: string, mode: IDBTransactionMode) {
         return new Promise((resolve: (object: DBSURE.CommitResolve) => void, reject) => {
-            if (!this.db) throw new Error(`db not opened.`);
+            if (!this.db) throw new Error(`db not opened.`)
             const store = this.db.transaction(name, mode).objectStore(name)
             const request = store.getAll()
             request.addEventListener('success', () => resolve({ store, items: request.result }))
