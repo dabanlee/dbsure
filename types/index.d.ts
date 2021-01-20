@@ -3,18 +3,18 @@ declare namespace DBSURE {
         key?: string,
         options?: IDBIndexParameters,
     }
-    
+
     interface Schema {
         name: string,
         options?: IDBObjectStoreParameters,
         indexs?: Index[],
     }
-    
+
     interface CommitResolve {
         items: any[],
         store: IDBObjectStore,
     }
-    
+
     interface IStore {
         add<T>(items: T | T[]): Promise<T | T[]>,
         query<T>(query?: (item: T) => boolean): Promise<T[]>,
